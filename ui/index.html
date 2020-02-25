@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>ModelBinding bug #19220 reproduction</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+    <h1>ModelBinding bug <a href="https://github.com/dotnet/aspnetcore/issues/19220">#19220</a> reproduction</h1>
+    <p>The below should have identical received data</p>
+
+    <h2>Sent data <small>(jQuery)</small></h2>
+    <pre id="mydatasent"></pre>
+
+    <h2>Received data</h2>
+    <pre id="myjquerydatareceived"></pre>
+
+    <hr>
+
+    <h2>Query string <small>(dotted form)</small></h2>
+    <pre id="myquerystring"></pre>
+
+    <h2>Received data</h2>
+    <pre id="mydottedformdatareceived"></pre>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        let data = {sort: [{field: 'this', dir: 'desc'}, {field: 'that', dir: 'asc'}]};
+        $('#mydatasent').html(JSON.stringify(data));
+
+        $.ajax({
+            method: 'GET',
+            //url: 'http://localhost:44345/echo',
+            url: 'https://localhost:5001/echo',
+            data: data,
+        })
+        .done((results) => {
+            $('#myjquerydatareceived').html(JSON.stringify(results));
+        });
+
+        //-------------------
+
+        let queryString = '?sort[0].field=this&sort[0].dir=desc&sort[1].field=that&sort[1].dir=asc';
+        $('#myquerystring').html(JSON.stringify(queryString));
+
+        $.ajax({
+            method: 'GET',
+            url: 'https://localhost:5001/echo' + queryString
+        })
+        .done((results) => {
+            $('#mydottedformdatareceived').html(JSON.stringify(results));
+        });
+
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+
+tags
+
+*~
+*.swp
+*.swo
+
+.vs/
+obj/
+bin/
+
+
